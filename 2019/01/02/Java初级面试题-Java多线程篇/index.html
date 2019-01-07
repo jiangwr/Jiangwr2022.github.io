@@ -51,8 +51,7 @@
 <p>说明:Exectors各个方法的弊端:</p>
 <ul>
 <li>newFixedThreadPool和newSingleThreadExecutor:主要问题是堆积的请求处理队列可能会耗费非常大的内存，甚至OOM。</li>
-<li>newCachedThreadPool和newScheduledThreadPool:主要问题是最大线程数是Integer.MAX_VALUE，可能会创建数量非常多的线程，甚至OOM。</li>
-<li><img src="https://img-blog.csdnimg.cn/20181216213951537.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbnRhY2V2ZXJ5ZGF5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2></li>
+<li>newCachedThreadPool和newScheduledThreadPool:主要问题是最大线程数是Integer.MAX_VALUE，可能会创建数量非常多的线程，甚至OOM。<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2></li>
 </ul>
 <p>通俗来讲，线程对于一个volatile变量的修改，对于其他线程是可见的。即线程每次获取的volatile变量的值都是最新的。</p>
 <p>汇编代码层面用Lock前缀指令</p>
