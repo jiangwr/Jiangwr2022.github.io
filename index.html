@@ -4,10 +4,145 @@
 <p>解决方式:修改/etc/hosts文件</p></div><p class="readmore"><a href="/2019/01/04/Mac上Intelij-IDEA启动速度慢/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/ConcurrentHashMap/">ConcurrentHashMap</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="Jdk1-7"><a href="#Jdk1-7" class="headerlink" title="Jdk1.7"></a>Jdk1.7</h2><p>在jdk1.7中，concurrentHashMap采用分段锁的设计，只有在同一个分段中才存在竞争，不同的分段之间没有竞争。相比于对整个Map加锁的设计，分段锁大大的提高了高并发环境下的处理能力。但是由于不是对整个Map进行加锁，导致一些需要扫描整个Map的方法(如size(),containsValue())需要使用特殊的实现，另外一些方法(如clear())甚至放弃了对一致性的要求。</p></div><p class="readmore"><a href="/2019/01/02/ConcurrentHashMap/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/HashMap1-7与1-8以及相关问题/">HashMap1.7与1.8以及相关问题</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><p>HashMap根据键的hashcode值存储数据，遍历的顺序是不确定的，允许一个key为null、多个value为null。HashMap是非线程安全的，如果需要满足线程安全，可以用Collections的synchronizedMap方法使HashMap具有线程安全的能力，或者使用ConcurrentHashMap。</p></div><p class="readmore"><a href="/2019/01/02/HashMap1-7与1-8以及相关问题/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/面试常见的String问题/">面试常见的String问题</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><p>String的intern方法以及new String(“Hello”)创建几个对象是经常出现的问题。</p></div><p class="readmore"><a href="/2019/01/02/面试常见的String问题/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-Java多线程篇/">Java初级面试题-Java多线程篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="创建线程的方式"><a href="#创建线程的方式" class="headerlink" title="创建线程的方式"></a>创建线程的方式</h2><ol>
 <li>实现Runnable接口</li>
 <li>实现Callable接口</li>
-<li>继承Thread类</li></ol></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-Java多线程篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-JVM篇/">Java初级面试题-JVM篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h2><p><strong>程序计数器</strong>:记录正在执行的字节码指令地址。若执行本地方法，则为undefined。该区域是JVM中唯一不会发生OutOfMemoryError的区域。</p></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-JVM篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-Java基础篇/">Java初级面试题-Java基础篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="final、finally、finalize的区别"><a href="#final、finally、finalize的区别" class="headerlink" title="final、finally、finalize的区别"></a>final、finally、finalize的区别</h2><p><strong>final</strong>:</p></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-Java基础篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-计算机网络篇/">Java初级面试题-计算机网络篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h3 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h3><ol>
+<li>继承Thread类</li></ol></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-Java多线程篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-JVM篇/">Java初级面试题-JVM篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h2><p><strong>程序计数器</strong>:记录正在执行的字节码指令地址。若执行本地方法，则为undefined。该区域是JVM中唯一不会发生OutOfMemoryError的区域。</p></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-JVM篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-Java基础篇/">Java初级面试题-Java基础篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h2 id="final、finally、finalize的区别"><a href="#final、finally、finalize的区别" class="headerlink" title="final、finally、finalize的区别"></a>final、finally、finalize的区别</h2><p><strong>final</strong>:</p>
+<ol>
+<li>final修饰的类不可以被继承。</li>
+<li>final修饰的方法不可以被重写。</li>
+<li>final修饰的变量引用不可以改变。</li>
+</ol>
+<p><strong>finally</strong>:finally是Java保证重点代码一定要被执行的一种机制。我们可以使用try-finally或者try-catch-finally来进行类似关闭JDBC连接、保证unlock锁等动作。</p>
+<p><strong>finalize</strong>:finalize是基础类java.lang.Oject的一个方法。当一个对象可以被回收的时候，如果需要执行该对象的finalize()方法，那么就有可能在该方法中让对象重新被引用，从而实现自救。finalize()方法只能执行一次，如果回收的对象在之前调用了finalize()方法，后面回收时不会调用finalize()方法。finalize机制已经不推荐使用了，并且在JDK9开始被标记为deprecated。</p>
+<h2 id="int与Integer"><a href="#int与Integer" class="headerlink" title="int与Integer"></a>int与Integer</h2><p>Integer的默认值为null,int默认值为0；</p>
+<p>Integer是int的包装类,int是Java中的基本数据类型。Java中一共有8种基本数据类型。其中4种为整型，2种浮点类型，1种用于表示Unicode编码字符单元的字符类型char,1种用于表示真值的boolean。</p>
+<p><strong>整型</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">类型</th>
+<th>存储大小</th>
+<th>取值范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">byte</td>
+<td>1字节</td>
+<td>-128~127</td>
+</tr>
+<tr>
+<td style="text-align:left">short</td>
+<td>2字节</td>
+<td>-32768~32767</td>
+</tr>
+<tr>
+<td style="text-align:left">int</td>
+<td>4字节</td>
+<td>-2147483648~2147483647(正好超过20亿)</td>
+</tr>
+<tr>
+<td style="text-align:left">long</td>
+<td>8字节</td>
+<td>-9223372036854775808~9223372036854775807</td>
+</tr>
+</tbody>
+</table>
+<p><strong>浮点类型</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储大小</th>
+<th>取值范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float</td>
+<td>4字节</td>
+<td>约±3.40282347E+38F(有效位数6~7位)</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8字节</td>
+<td>约±1.79769313486231570E+308(有效位数15位)</td>
+</tr>
+</tbody>
+</table>
+<p>double的数值精度是float类型的两倍，所以double又称为双精度数值。float类型的数值需要有后缀F(例如，3.14F)。若没有后缀，默认为double类型，也可以加后缀D(例如，3.14D)</p>
+<p><strong>字符类型</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>char</td>
+<td>2字节</td>
+</tr>
+</tbody>
+</table>
+<p>char通常表示字符常量。例如‘A’是编码65所对应的字符常量。</p>
+<p><strong>boolean类型</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>存储大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>1bit</td>
+</tr>
+</tbody>
+</table>
+<p>boolean类型有两个值:false和true。原来判断逻辑条件。</p>
+<h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写"></a>重载与重写</h2><h4 id="重载"><a href="#重载" class="headerlink" title="重载"></a>重载</h4><p>重载存在于同一个类中，指的是一个方法与已经存在的方法名称上相同，但是参数列表(参数类型、个数、顺序至少一个)不同。需要注意的是，返回值类型不同，其他都相同不算重载。</p>
+<h4 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h4><p>重写存在于继承中，指的是子类实现了一个与父类在方法声明上完全相同的一个方法。</p>
+<p>为了满足里式替换原则，重写有两个限制:</p>
+<ol>
+<li>子类方法的访问权限必须大于等于父类方法。</li>
+<li>子类方法的返回类型必须是父类方法返回类型或者是其子类。</li>
+</ol>
+<p>使用@Override注解，可以让编译器帮忙检查是否满足以上两个条件。</p>
+<h2 id="抽象类与接口"><a href="#抽象类与接口" class="headerlink" title="抽象类与接口"></a>抽象类与接口</h2><h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><p>接口是抽象方法的一个集合，通过接口达到了API定义与实现分离的目的。接口无法被实例化，接口中的变量都隐含着public static final的意义。在Java 8之前，接口中的方法必须是抽象方法。Java 8开始，接口可以有default方法和static方法。常用的一些接口如Callable、Runnable、Comparator等在Java 8中添加了@FunctionalInterface注解，简单来说就是只有一个抽象方法的接口，通常建议使用@FunctionalInterface注解来标记。Lambda本身也可以看作是一类Function Inerface。</p>
+<h4 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h4><p>抽象类是无法被实例化的类，用abstract关键字修饰class，它的主要作用是代码重用。抽象类可以有0个或者多个抽象方法。抽象类大多抽取相关类的共用方法实现或者共同成员变量。然后通过继承的方式达到代码复用的目的。除了无法被实例化，形式上和普通类没有什么太多区别。</p>
+<h2 id="反射的用途与实现"><a href="#反射的用途与实现" class="headerlink" title="反射的用途与实现"></a>反射的用途与实现</h2><h4 id="反射的作用"><a href="#反射的作用" class="headerlink" title="反射的作用"></a>反射的作用</h4><ol>
+<li>在运行时判断任意一个对象所属的类。</li>
+<li>在运行时构造任意一个类的对象。</li>
+<li>在运行时判断一个类所具有的成员变量和方法。</li>
+<li>在运行时调用任何一个对象的方法。</li>
+</ol>
+<h4 id="反射的用途"><a href="#反射的用途" class="headerlink" title="反射的用途"></a>反射的用途</h4><ol>
+<li>使用IDE时，在一个类或者对象后输入”.”符号，编译器会自动列出属性和方法。</li>
+<li>很多框架都是配置化的(例如Spring通过XML文件配置Java Bean)为了保证框架的通用性，他们会根据配置文件加载不同的对象或者类，调用不同的方法，这个时候必须用到反射—运行时动态加载所需对象。</li>
+</ol>
+<h4 id="反射的基本运用"><a href="#反射的基本运用" class="headerlink" title="反射的基本运用"></a>反射的基本运用</h4><ol>
+<li><p>获取class对象(三种方式)</p>
+<p>a.class.forName();</p>
+<p>b.对象.class；</p>
+<p>c.对象.getClass()；</p>
+</li>
+<li><p>获取类的实例</p>
+<p>a.对于有空构造方法的类</p>
+<p>Object o = class对象.newInstance();//会调用空构造器，如果没有会报错</p>
+<p>b.对于没有空构造方法的，先获取他的构造对象。</p>
+<p>Constroctor constroctor = class对象.getConstroctor(String class,Integer class);</p>
+<p>Object obj = constroctor.newInstance(“yuanzhi”,1);//通过构造器对象的newInstance()方法进行对象的初始化。</p>
+</li>
+</ol>
+<h2 id="equals与”-”"><a href="#equals与”-”" class="headerlink" title="equals与”==”"></a>equals与”==”</h2><p>由于所有类继承自Object类，如果没有重写equals方法的话，调用的仍是Object类的方法，而Object类的equals方法返回的是==的判断。==比较引用，equals通常比较内容。</p>
+<h2 id="Exception-和Error，运行时异常与一般异常，检查异常-checked-与非检查异常-unchecked-的区别关系"><a href="#Exception-和Error，运行时异常与一般异常，检查异常-checked-与非检查异常-unchecked-的区别关系" class="headerlink" title="Exception 和Error，运行时异常与一般异常，检查异常(checked)与非检查异常(unchecked)的区别关系?"></a>Exception 和Error，运行时异常与一般异常，检查异常(checked)与非检查异常(unchecked)的区别关系?</h2><p>Java中只有<strong>Throwable</strong>类的实例才可以被抛出(throw)或者捕获(catch)，它是异常处理机制的基本组成类型。Exception和Error都是继承了Throwable类。</p>
+<p><strong>Exception</strong>是程序在正常运行中，可以预料的意外情况，并且应该被捕获，进行相应的处理。</p>
+<p><strong>Error</strong>是指正常情况下，不大可能出现的情况，绝大部分的Error都会导致程序(比如JVM)自身处于非正常、不可恢复的状态，所以也不需要去捕获。比如常见的OutOfMemoryError。</p>
+<p>Exception有可分为可检查异常与非检查异常，<strong>检查异常</strong>必须在代码中进行异常捕获处理，这是编译期处理的一部分。<strong>非检查异常</strong>就是运行时异常，可以通过编码避免的逻辑错误，具体根据需要是否捕获，并不会在编译期强制要求，比如常见的NullPointerException，ArrayIndexOutOfBoundsException。</p></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-Java基础篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-计算机网络篇/">Java初级面试题-计算机网络篇</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h3 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h3><ol>
 <li>首先服务器处理监听状态，等待连接请求。</li>
 <li>客户端向服务器发送请求报文，SYN=1,seq=x。</li></ol></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-计算机网络篇/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2019/01/02/Java初级面试题-附答案/">Java初级面试题(附答案)</a></h1><div class="post-meta">2019-01-02</div><div class="post-content"><h4 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h4><ol>
 <li>三次握手与四次挥手</li>
 <li>Web页面请求过程</li>
 <li>Cookie与Session</li>
-<li>HTTP的GET与POST的区别</li></ol></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-附答案/">阅读全文</a></p></div><nav class="page-navigator"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页</a></nav></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/IDEA/" style="font-size: 15px;">IDEA</a> <a href="/tags/Mac/" style="font-size: 15px;">Mac</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/01/04/Mac启动台删除无效图标/">Mac启动台删除无效图标</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/04/Mac上Intelij-IDEA启动速度慢/">Mac上Intelij IDEA启动速度慢</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/ConcurrentHashMap/">ConcurrentHashMap</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/HashMap1-7与1-8以及相关问题/">HashMap1.7与1.8以及相关问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/面试常见的String问题/">面试常见的String问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-Java多线程篇/">Java初级面试题-Java多线程篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-JVM篇/">Java初级面试题-JVM篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-Java基础篇/">Java初级面试题-Java基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-计算机网络篇/">Java初级面试题-计算机网络篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-附答案/">Java初级面试题(附答案)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://huarongxie.com/" title="华容谢" target="_blank">华容谢</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+<li>HTTP的GET与POST的区别</li></ol></div><p class="readmore"><a href="/2019/01/02/Java初级面试题-附答案/">阅读全文</a></p></div><nav class="page-navigator"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页</a></nav></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/面试/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/Mac/" style="font-size: 15px;">Mac</a> <a href="/tags/IDEA/" style="font-size: 15px;">IDEA</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/01/04/Mac启动台删除无效图标/">Mac启动台删除无效图标</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/04/Mac上Intelij-IDEA启动速度慢/">Mac上Intelij IDEA启动速度慢</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/ConcurrentHashMap/">ConcurrentHashMap</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/HashMap1-7与1-8以及相关问题/">HashMap1.7与1.8以及相关问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/面试常见的String问题/">面试常见的String问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-Java多线程篇/">Java初级面试题-Java多线程篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-JVM篇/">Java初级面试题-JVM篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-Java基础篇/">Java初级面试题-Java基础篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-计算机网络篇/">Java初级面试题-计算机网络篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/02/Java初级面试题-附答案/">Java初级面试题(附答案)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://huarongxie.com/" title="华容谢" target="_blank">华容谢</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
