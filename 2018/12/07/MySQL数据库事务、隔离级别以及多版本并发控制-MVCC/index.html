@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>MySQL数据库事务、隔离级别以及多版本并发控制(MVCC) | jiangwr</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</h1><a id="logo" href="/.">jiangwr</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</h1><div class="post-meta">Dec 7, 2018<span> | </span><span class="category"><a href="/categories/MySQL/">MySQL</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>事务就是一组原子性的SQL查询。也就是说，事务内的语句，要么全部执行成功，要么全部执行失败。</p>
+<h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p><strong>原子性(atomicity)</strong></p>
+<p> 一个事务必须被视为一个不可分割的最小单元，整个事务中的所有操作要么全部提交成功，要么全部失败回滚，对于一个事务来说，不可能只执行其中的一部分操作，这就是事务的原子性。</p>
+<p><strong>一致性(consistency)</strong></p>
+<p> 数据库总是从一个一致性的状态转换到另外一个一致性的状态。一致性确保了事务只要没有最终提交，就不会把事务中所作的修改保存到数据库中。</p>
+<p><strong>隔离性(isolation)</strong></p>
+<p> 通常来说(因为要考虑隔离级别，所以说是通常情况)，一个事务所作的修改在最终提交之前，对其他事务是不可见的。</p>
+<p><strong>持久性(durability)</strong></p>
+<p> 一旦事务提交，其所作的修改就会永久保存到数据库中。此时即使系统奔溃，修改的数据也不会丢失。持久性是个模糊的概念，因为持久性也分很多级别。有些持久性策略能够提供非常强的安全保障，而有些则未必。而且不可能做到百分之百的持久性保证的策略。</p>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>隔离性其实比想象的要复杂。在SQL标准中定义了四种隔离级别，每一种级别规定了一个事务中所作的修改，哪些在事务间是可见的，哪些是不可见的。较低级别的隔离通常可以执行更高的并发，系统的开销也更低。</p>
+<p><strong>READ UNCOMMITTED(读未提交)</strong></p>
+<p>在READ UNCOMMITTED级别，事务中的修改即使是没有提交，对其他事务也是可见的。事务可以读取到未提交的数据，这被称为脏读(Dirty Read)。从性能来说，READ UNCOMMITTED不会比其他级别好太多，但缺乏其他级别的很多优势，所以实际应用很少。</p>
+<p><strong>READ COMMITTED(读提交)</strong></p>
+<p>大多数数据库的默认隔离级别都是READ COMMITTED(但MySQL不是)。READ COMMITTED满足隔离性的简单定义:一个事务开始时，只能看见已经提交的事务所作的修改。换句话说，一个事务从开始直到提交之前，所作的任何修改对其他事务都是不可见的。这个级别有时候会产生不可重复读(nonrepeatable read)，因为执行两次执行同样的查询，可能会得到不一样的结果。</p>
+<p><strong>REPEATABLE READ(可重复读)</strong></p>
+<p>REPEATABLE READ解决了脏读，和不可重复读的问题。但是无法解决幻读(Phantom Read)的问题。幻读是指当某个事务在读取某个范围内的记录时，另外一个事务又在范围内插入新的记录，当之前的事务再次读取该范围的记录，会产生幻行(Phantom Row)。InnoDB和XtraDB存储引擎通过多版本并发控制(MVCC)解决了幻读的问题。(可重复读是MySQL的默认事务隔离级别)。</p>
+<p><strong>SERIALIZABLE(可串行化)</strong></p>
+<p>SERIALIZABLE是最高隔离级别。它通过强制事务串行执行，避免幻读问题。简单来说，SERIALIZABLE会在读取的每一行上都加锁，所以可能导致大量的超时和锁争用的问题。实际应用很少使用该隔离级别，只有在非常需要确保数据一致性而且可以接受没有并发的情况下，才考虑采用该级别。</p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读可能性</th>
+<th>不可重复读可能性</th>
+<th>幻读可能性</th>
+<th>加锁读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>READ UNCOMMITTED</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>READ COMMITTED</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>REPEATABLE READ</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="多版本并发控制-MVCC"><a href="#多版本并发控制-MVCC" class="headerlink" title="多版本并发控制(MVCC)"></a>多版本并发控制(MVCC)</h3><p>MySQL的大多数事务型存储引擎实现的都不是简单的行级锁。基于提升并发性能的考虑，它们一般都同时实现了多版本并发控制(MVCC)。不仅是MySQL，包括Oracle、PostgreSQL等其他数据库系统也实现了MVCC，但是实现机制不尽相同，因为MVCC没有一个统一的实现标准。</p>
+<p>可以认为MVCC是行级锁的一个变种，但是它在多数情况下都避免了加锁操作，因此开销更低。虽然实现机制有所不同，但大都实现了非阻塞的读操作，写操作也只锁定必要的行。</p>
+<p>MVCC的实现，是通过保存数据在某个时间点的快照来实现的。也就是说，不管执行多长时间，每个事物看到的数据都是一致的。根据事务开始时间的不同，每个事物对同一张表，同一时刻看到的数据可能是不一样的。</p>
+<p>InnoDB的MVCC，是通过在每行记录后面保存两个隐藏的列来实现的。这两个列，一个保存了行的创建时间，一个保存行的过期时间或者删除时间。存储的并不是实际的时间值，而是系统版本号(system version number)。每开始一个新的事务，系统版本号都会自动递增。事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号进行比较。</p>
+<p><strong>MVCC在REPEATABLE READ隔离级别下的操作</strong></p>
+<p><strong>SELECT</strong></p>
+<p>InnoDB会根据以下两个条件检查每行记录:</p>
+<p>a.InnDB只查找版本早于当前事务版本的数据行(也就是，行的系统版本号小于或者等于事务的系统版本号)，这样可以确保事务读取的行，要么是在事务开始前已经存在，要么是事务自身插入或者修改过的。</p>
+<p>b.行的删除版本要么未定义，要么大于当前事务版本号。这可以确保事务读取到的行，在事务开始之前未被删除。</p>
+<p>只有符合上述两个条件的记录，才能返回作为查询的结果。</p>
+<p><strong>INSERT</strong></p>
+<p>InnoDB为新插入的每一行保存当前系统版本号作为行版本号。</p>
+<p><strong>DELETE</strong></p>
+<p>InnoDB为删除的每一行保存当前系统版本号作为行删除标识。</p>
+<p><strong>UPDATE</strong></p>
+<p>InnoDB先插入一行新记录，保存当前系统版本号作为行版本号，同时保存当前系统版本号到原来的行作为行的删除标识。</p>
+<p>保存这样两个系统版本号，使大多数读操作都可以不用加锁。这样设计使得读操作很简单，性能很好，并且也能保证只会读到符合标准的行。不足之处是每行记录都是需要额外的存储空间，需要做更多的行检查工作以及一些额外的维护工作。</p>
+<p>MVCC只在REPEATABLE READ和READ COMMITTED两个隔离级别下工作。其他两个隔离级别都和MVCC不兼容。因为READ UNCOMMITTED总是读到最新的数据行，而不是符合当前事务版本的数据行。SERIALIZABLE则会对所有读取的行都加锁。</p>
+<h3 id="InnoDB中幻读的解决到底是依赖Next-Key-Locks还是MVCC"><a href="#InnoDB中幻读的解决到底是依赖Next-Key-Locks还是MVCC" class="headerlink" title="InnoDB中幻读的解决到底是依赖Next-Key Locks还是MVCC?"></a>InnoDB中幻读的解决到底是依赖Next-Key Locks还是MVCC?</h3><p>首先读分为:快照读、当前读。</p>
+<ul>
+<li><p>快照读。例: SELECT * FROM table WHERE …;</p>
+</li>
+<li><p>当前读。当前读都是先读后写,只能读当前的值特殊的读操作。比如更新，插入，删除操作，属于当前读，需要加锁。 </p>
+<p>SELECT <em>FROM table WHERE ? lock in share mode;SELECT</em> from FROM table WHERE ? for update;<br>INSERT INTO table values (…);<br>UPDATE table SET ? WHERE ?;</p>
+</li>
+</ul>
+<p>结论:</p>
+<ul>
+<li>对于快照读来讲，幻读的解决依赖于MVCC，使用 MVCC 读取的是快照中的数据，这样可以减少加锁所带来的开销。</li>
+<li>对于当前读，读取的是最新的数据，需要加锁，依赖Next-Key Locks。</li>
+</ul>
+<p><em>拓展</em>:</p>
+<p>Next-key Locks:是InnoDB存储引擎的一种锁实现。</p>
+<p>Record Locks:锁定一个记录上的索引，而不是记录本身。</p>
+<p>Gap Locks:锁定索引之间的间隙，但是不包含索引本身。</p>
+<p>Next-key Locks:是上述两者的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《高性能MySQL》</li>
+</ul>
+</div><div class="tags"><a href="/tags/MySQL/">MySQL</a><a href="/tags/数据库事务/">数据库事务</a></div><div class="post-nav"><a class="pre" href="/2018/12/11/MySQL中索引的类型/">MySQL中索引的类型</a><a class="next" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java多线程/">Java多线程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/20/记录Ant-Design-Pro-Spring-Boot-jar包部署时遇到的坑/">记录Ant Design Pro+Spring Boot jar包部署时遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/深拷贝/">深拷贝</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/02/计算机网络基础/">计算机网络基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/Java基础/">Java基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/SpringBoot配置HTTPS/">SpringBoot配置HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/20/SpringBoot-打包的时候报错-BeanCreationException/">SpringBoot 打包的时候报错 BeanCreationException</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/11/MySQL中索引的类型/">MySQL中索引的类型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/07/MySQL数据库事务、隔离级别以及多版本并发控制-MVCC/">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/01/分布式锁的认识/">分布式锁的认识</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>分布式锁的认识 | jiangwr</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">分布式锁的认识</h1><a id="logo" href="/.">jiangwr</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">分布式锁的认识</h1><div class="post-meta">Nov 1, 2018<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><h2 id="分布式锁有四个基本条件"><a href="#分布式锁有四个基本条件" class="headerlink" title="分布式锁有四个基本条件"></a>分布式锁有四个基本条件</h2><ol>
+<li>存储空间。分布式锁需要存储空间，并且锁的空间锁可以被访问到的。</li>
+</ol>
+<p>锁的实现需要依存一个可以被存储的空间。在多线程情况下，是内存。在多进程情况下，是内存或者磁盘。最普遍的外部存储空间就是数据库了(version乐观锁，比如quartz集群中有所使用)。除此之外，还有各种缓存，比如Redis、Tair、Memcached、Mongodb，当然还有专门的分布式协调服务Zookeeper，甚至另外一台主机。只要可以存储数据，并且锁在其中可以被多台主机访问，那就可以作为分布式锁的存储空间。</p>
+<ol start="2">
+<li>唯一标识。分布式锁需要被唯一标识。</li>
+</ol>
+<p>不同的共享资源，必然需要用不同的锁的进行保护，因此相应的锁必须有唯一的标识。在多线程环境中，锁可以是一个对象，那么对于这个对象的引用便是这个唯一的标识。在多进程环境中，信号量在共享内存中也是由引用作为 唯一标识的 。但如果不在内存中，失去了对锁的引用，如何唯一标识它呢?有名信号量便是用硬盘中文件名作为唯一标识。因此，在分布式环境中，只要给这个锁设定一个名称，并且保证这个名称是全局唯一的，那么就可以作为唯一标识。</p>
+<ol start="3">
+<li>至少要有两种状态。</li>
+</ol>
+<p>为了给临界区加锁和解锁，需要存储两种不同的状态。如ReentrantLock中的status，0表示没有线程竞争，大于0表示有线程竞争；信号量大于0表示可以进入临界区，小于等于0则表示需要被阻塞。因此只要在分布式环境下，锁的状态有两种以上，均可实现。</p>
+<p>以上的方式可以实现一个粗糙的分布式锁，可能出现的问题:</p>
+<ul>
+<li>问题1:锁状态判断原子性无法保证</li>
+</ul>
+<p>从读取锁的状态，到判断该状态是否为被锁，需要经历两步操作。如果不能保证这两步的原子性，就可能导致不止一个请求获取到了锁，这显然是不行的。因此，我们需要保证锁状态判断的原子性。</p>
+<ul>
+<li>问题2:网络断开或者主机宕机，锁状态无法清除</li>
+</ul>
+<p>假设在已经获得锁的情况下，突然出现了网络断开或者主机宕机，如果不做任何处理该锁将仍然处于被锁定的状态。那么之后所有的请求都无法再成功抢占到这个锁。因此，我们需要再持有的主机宕机或者网络断开的时候，及时的释放这把锁。</p>
+<ul>
+<li>问题3:无法保证释放的是自己上锁的那把锁</li>
+</ul>
+<p>在解决了问题2的情况下再设想一下，假设持有锁的主机A再临界区遇到网络抖动导致网络断开，分布式锁及时的释放掉了这把锁。之后，另外一个主机B占有了这把锁，但是此时主机A网络恢复，退出临界区时解锁。由于都是同一把锁，所以主机A会把主机B的锁解开。此时如果有第三个主机尝试抢占这把锁 ，也就将会成功获得。因此，我们需要在解锁时，确定自己解的这个锁正是自己锁上的。</p>
+<p><strong>进阶条件</strong></p>
+<p>如果分布式锁的实现，解决了上面三个问题，那么就可以算一个相对完整的分布式锁了。然而在实际的系统环境中，还会对分布式锁有更高的要求。</p>
+<ol>
+<li>可重入:线程中的可重入，指的是外层函数获得锁之后，内层也可以获得锁，ReetrantLock和synchronized都是可重入锁;衍生到分布式环境中，一般仍然指的是线程的可重入，在绝大多数分布式环境中，都要求分布式锁是可重入的。</li>
+<li>惊群效应(Herd Effect):在分布式锁中，惊群效应指的是，在有多个请求等待获取锁的时候，一旦占有锁的线程释放之后，如果所有等待的线程都被同时唤醒，尝试抢占锁。但是这样的情况会造成比较大的开销，那么在实现分布式锁的时候，应该尽量避免惊群效应的产生。</li>
+<li>公平锁和非公平锁:不同的需求，那么需要不同的分布式锁。非公平锁普遍比公平锁开销小。但是业务需求如果必须要锁的竞争者按照顺序获得锁，那么就需要实现公平锁。</li>
+<li>阻塞锁和自旋锁:针对不同的使用场景，阻塞锁和自旋锁的效率也会有所不同。阻塞锁会有上下文切换，如果并发量比较高且临界区的操作耗时比较短，那么造成的性能开销就比较大了。但是如果临界区操作耗时比较长，一直保持自旋，也会对CPU造成更大的负荷。</li>
+</ol>
+<h2 id="ZooKeeper的分布式锁实现"><a href="#ZooKeeper的分布式锁实现" class="headerlink" title="ZooKeeper的分布式锁实现"></a>ZooKeeper的分布式锁实现</h2><p>ZooKeeper中有一种节点叫作顺序节点。例如在/lock/目录下创建3个节点，ZooKeeper集群会按照发起创建的顺序来创建节点，节点分别为/lock/0000000001、/lock/0000000002、/lock/0000000003。</p>
+<p>ZooKeeper中还有一种名为临时节点的节点，临时节点由某个客户端创建，当客户端与ZooKeeper集群断开连接，则该节点自动删除。EPHEMERAL_SEQUENTIAL为临时顺序节点。</p>
+<p>根据ZooKeeper中节点是否存在，可以作为分布式锁的锁状态，以此实现一个分布式锁，下面是分布式锁的基本逻辑:</p>
+<ol>
+<li>客户端调用create()方法创建名为”/dlm-locks/lockname/lock-“的临时顺序节点。</li>
+<li>客户端调用getChildren(“lockName”)方法来获取所有已经创建的字节点。</li>
+<li>客户端获取到所有子节点path之后，如果发现自己在步骤1中创建的节点是所有节点中序号最小的 ，那么就认为这个客户端获得了锁。</li>
+<li>如果创建的节点不是所有节点中需要最小的，那么则监视比自己创建节点的序列号小的最大的节点，进入等待。直到下次监视的子节点变更的时候，再进行子节点的获取，判断是否获取锁。</li>
+</ol>
+<p>释放锁的过程相对简单，就是删除自己创建的那个子节点即可，不过也需要考虑删除节点失败等异常。</p>
+<p>ZooKeeper的临时节点可以直接避免网络断开或者主机宕机，锁状态无法清除的问题，顺序节点可以避免惊群效应。这些特性都使得利用ZooKeeper实现分布式锁成为了最普遍的方案之一。</p>
+<h2 id="Redis的分布式锁实现"><a href="#Redis的分布式锁实现" class="headerlink" title="Redis的分布式锁实现"></a>Redis的分布式锁实现</h2><p>Redis的分布式缓存特性使其成为了分布式锁的一种基础实现。通过Redis中是否存在某个锁ID，则可以判断是否上锁。为了保证判断锁是否存在的原子性，保证只有一个线程获取同一把锁，Redis有SETNX(即SET if Not Exists)和GETSET(先写新值，返回旧值，原子性操作，可以用于分辨是不是首次操作)操作。</p>
+<p>为了防止主机宕机或者网络断开之后的死锁。Redis没有ZooKeeper那种天然的实现方式，只能依赖设置超时时间来规避。</p>
+<p>以下是一种比较普遍但不太完善的Redis分布式锁的实现步骤:</p>
+<ol>
+<li>线程A发送SETNX lock.orderid尝试获得锁，如果锁不存在，则set并获得锁。</li>
+<li>如果锁存在，则再判断锁的值(时间戳)是否大于当前时间，如果没有超时，则等待一下再重试。</li>
+<li>如果已经超时了，在用GETSET lock.{orderid}来尝试获取锁，如果这时候拿到的时间戳仍然超时，则说明已经获得锁了。</li>
+<li>如果在此之前，另外一个线程B快一步执行了上面的操作，那么线程A拿到的时间戳是个未超时的值，这时A没有如期获得锁，需要再次等待或者重试。</li>
+</ol>
+<p>该实现还有一个需要考虑的问题是全局时钟问题，由于生产环节主机时钟不能保证完全同步，对时间戳的判断也可能会产生误差。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://zhuanlan.zhihu.com/p/22820761" target="_blank" rel="noopener">分布式系统互斥性与幂等性问题的分析与解决</a></p>
+</div><div class="tags"><a href="/tags/分布式/">分布式</a></div><div class="post-nav"><a class="pre" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a><a class="next" href="/2018/10/22/git-clone提示帐号密码不对的问题/">git clone提示帐号密码不对的问题</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java多线程/">Java多线程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/11/20/记录Ant-Design-Pro-Spring-Boot-jar包部署时遇到的坑/">记录Ant Design Pro+Spring Boot jar包部署时遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/15/深拷贝/">深拷贝</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/02/计算机网络基础/">计算机网络基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/03/Java基础/">Java基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/SpringBoot配置HTTPS/">SpringBoot配置HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/20/SpringBoot-打包的时候报错-BeanCreationException/">SpringBoot 打包的时候报错 BeanCreationException</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/11/MySQL中索引的类型/">MySQL中索引的类型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/07/MySQL数据库事务、隔离级别以及多版本并发控制-MVCC/">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/01/分布式锁的认识/">分布式锁的认识</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
