@@ -9,13 +9,13 @@
 <p>@Scheduled 注解可以有三种定义。 如上面示例使用的是 fixedRate ，表示的是每间隔一段时间执行该任务,无论上一次任务是否完成，单位为毫秒。还有其他选择，如 fixedDelay ，表示的是上一次任务完成之后，再间隔一段时间执行该任务。还可以使用 <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/scheduling/support/CronSequenceGenerator.html" target="_blank" rel="noopener"><code>@Scheduled(cron=&quot;. . .&quot;)</code></a> 来进行更为复杂的操作。</p>
 <p>cron 表达式的使用示例:</p>
 <ul>
-<li>“0 0 <em> </em> <em> </em>“ = 每天每小时的0分0秒</li>
-<li>“<em>/10 </em> <em> </em> <em> </em>“ = 每十秒钟</li>
-<li>“0 0 8-10 <em> </em> *” = 每天的8点整，9点整，10点整</li>
-<li>“0 0 6,19 <em> </em> *” = 每天的上午6点整与下午7点整</li>
-<li>“0 0/30 8-10 <em> </em> *” = 每天的8:00, 8:30, 9:00, 9:30, 10:00, 10:30 </li>
-<li>“0 0 9-17 <em> </em> MON-FRI” = 周一到周五的9:00 am-5:00 pm 的每一个整点</li>
-<li>“0 0 0 25 12 ?” = 每个12月 25 日的 零点</li>
+<li><code>&quot;0 0 * * * *&quot;</code> = 每天每小时的0分0秒</li>
+<li><code>&quot;*/10 * * * * *&quot;</code> = 每十秒钟</li>
+<li><code>&quot;0 0 8-10 * * *&quot;</code> = 每天的8点整，9点整，10点整</li>
+<li><code>&quot;0 0 6,19 * * *&quot;</code> = 每天的上午6点整与下午7点整</li>
+<li><code>&quot;0 0/30 8-10 * * *&quot;</code> = 每天的8:00, 8:30, 9:00, 9:30, 10:00, 10:30 </li>
+<li><code>&quot;0 0 9-17 * * MON-FRI&quot;</code> = 周一到周五的9:00 am-5:00 pm 的每一个整点</li>
+<li><code>&quot;0 0 0 25 12 ?&quot;</code> = 每个12月 25 日的 零点</li>
 </ul>
 <p>该模式是六个由空格分隔的字段组成:分别表示秒，分钟，小时，日，月，工作日。</p>
 <p>最后一步是在启动类上加上 @EnableScheduling 注解，这个注解确保创建了后台任务执行器，不加该注解定时任务将不会执行</p>
