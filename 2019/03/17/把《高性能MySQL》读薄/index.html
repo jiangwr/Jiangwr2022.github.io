@@ -153,4 +153,96 @@
 <p>浮点类型在存储同样范围的值时，通常比 DECIMAL 使用更少的空间。 FLOAT 使用 4 个字节存储。DOUBLE 占用 8 个字节，相比 FLOAT 有更高的精度和更大的范围。</p>
 <p>因为需要额外的空间和计算开销，索引尽量只在对小数进行精确计算时才使用 DECIMAL — 例如存储财务数据。但是在数据量比较大的时候，可以考虑使用 BIGINT 代替 DECIMAL ，将需要存储的货币单位根据小数的位数乘以相应的倍数即可。假设要存储财务数据精确到万分之一分，则可以把所有金额乘以一百万，然后将结果存储在 BIGINT 里，这样可以同时避免浮点存储计算不精确和 DECIMAL 精确计算代价高的问题。</p>
 <h3 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h3><p>MySQL 支持多种字符串类型，每种类型还有很多变种。从 MySQL 4.1 开始，每个字符串列可以定义自己的字符集和排序规则，或者说校对规则(collation)。这些东西会在很大程度影响性能。</p>
-</div><div class="tags"><a href="/tags/MySQL/">MySQL</a></div><div class="post-nav"><a class="next" href="/2019/03/15/使用Spring-Boot创建定时任务/">使用Spring Boot创建定时任务</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java多线程/">Java多线程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/书籍阅读/">书籍阅读</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/把《高性能MySQL》读薄/">把《高性能MySQL》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/15/使用Spring-Boot创建定时任务/">使用Spring Boot创建定时任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/SpringBoot配置HTTPS/">SpringBoot配置HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/13/JVM的运行时数据区域、垃圾回收以及类加载机制/">JVM的运行时数据区域、垃圾回收以及类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/20/SpringBoot-打包的时候报错-BeanCreationException/">SpringBoot 打包的时候报错 BeanCreationException</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/11/MySQL中索引的类型/">MySQL中索引的类型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/07/MySQL数据库事务、隔离级别以及多版本并发控制-MVCC/">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/15/记录Ant-Design-Pro-Spring-Boot-jar包部署时遇到的坑/">记录Ant Design Pro+Spring Boot jar包部署时遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/01/分布式锁的认识/">分布式锁的认识</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+<h4 id="VARCHAR-和-CHAR-类型"><a href="#VARCHAR-和-CHAR-类型" class="headerlink" title="VARCHAR 和 CHAR 类型"></a>VARCHAR 和 CHAR 类型</h4><h5 id="VARCHAR"><a href="#VARCHAR" class="headerlink" title="VARCHAR"></a>VARCHAR</h5><p>VARCHAR 类型用于存储可变长字符串。它比定长类型更节省空间， 因为它仅使用必要的空间。有一种情况例外，如果 MySQL 表使用 ROW_FORMAT = FIXED 创建的话，每一行都会使用定长存储，这会很浪费空间。 VARCHAR 需要 1 或者 2 个额外字节记录字符串的长度。如果列的最大长度小于或者等于 255 字节，则只使用 1 个字节表示，否则使用 2 个字节。例如:一个 VARCHAR(10) 的列需要 11 个字节的存储空间。VARCHAR(1000) 的列则需要 1002 个字节，因为需要 2 个字节存储长度。</p>
+<p>由于是可变长度，所以 UPDATE 时可能使行变得比原来更长，如果一个行占用的空间增长，并且页内没有更多的空间存储，这种情况下，不同的存储引擎的处理方式是不一样的。 MyISAM 会将行拆成不同的片段存储， InnoDB 则需要分裂页使行可以放进页内。</p>
+<h5 id="CHAR"><a href="#CHAR" class="headerlink" title="CHAR"></a>CHAR</h5><p>CHAR 类型是定长的:MySQL 总是根据定义的字符串长度分配足够的内存空间。CHAR 非常适合存储密码的 MD5 值，因为这是一个定长的值。</p>
+<h4 id="BLOB-和-TEXT-类型"><a href="#BLOB-和-TEXT-类型" class="headerlink" title="BLOB 和 TEXT 类型"></a>BLOB 和 TEXT 类型</h4><p>BLOB 采用二进制存储，TEXT 采用字符方式存储。</p>
+<p>与其他类型不同，MySQL 把每个 BLOB 和 TEXT 值当作一个独立的对象处理。存储引擎在存储时通常会做特殊处理。</p>
+<h4 id="使用枚举-ENUM-代替字符串类型"><a href="#使用枚举-ENUM-代替字符串类型" class="headerlink" title="使用枚举 (ENUM) 代替字符串类型"></a>使用枚举 (ENUM) 代替字符串类型</h4><p>枚举列可以把一些不重复的字符串存储成一个预定义的集合。</p>
+<h3 id="日期和时间类型"><a href="#日期和时间类型" class="headerlink" title="日期和时间类型"></a>日期和时间类型</h3><p>大部分时间类型都没有替代品，因此没有什么是最佳选择的问题。唯一的问题是保存日期和时间的时候需要做什么。MySQL 提供了两种相似的日期类型:DATETIME 和 TIMESTAMP。</p>
+<h4 id="DATETIME"><a href="#DATETIME" class="headerlink" title="DATETIME"></a>DATETIME</h4><p>这个类型能保存的范围从 1001 年到 9999 年，精度为秒。它把日期和时间封装到格式为YYYYMMDDHHMMSS 的整数中，与时区无关。使用 8 个字节的存储空间。</p>
+<h4 id="TIMESTAMP"><a href="#TIMESTAMP" class="headerlink" title="TIMESTAMP"></a>TIMESTAMP</h4><p>TIMESTAMP 类型保存了从 1970 年 1 月 1 日午夜(格林尼治标准时间)以来的秒数，它和 UNIX 时间戳相同。TIMESTAMP 只使用了 4 个字节的存储空间。因此它的范围比 DATETIME 小很多，只能表示从 1970 到 2038 年。TIMESTAMP 显示的值会依赖于时区。MySQL 服务器、操作系统，以及客户端连接都有时区设置。</p>
+<h3 id="位数据类型"><a href="#位数据类型" class="headerlink" title="位数据类型"></a>位数据类型</h3><h4 id="BIT"><a href="#BIT" class="headerlink" title="BIT"></a>BIT</h4><p>可以使用 BIT 列在一列中存储一个或者多个 true/false 值。</p>
+<h4 id="SET"><a href="#SET" class="headerlink" title="SET"></a>SET</h4><p>如果需要保存很多 true/false 值，可以考虑合并这些列到一个 SET 数据类型，它在 MySQL 内部是以一系列打包的位的集合来表示的。</p>
+<h2 id="MySQL-中的索引类型"><a href="#MySQL-中的索引类型" class="headerlink" title="MySQL 中的索引类型"></a>MySQL 中的索引类型</h2><p>在 MySQL 中，存储引擎先在索引中找到对应值，然后根据匹配的索引记录找到对应的数据行。索引(在 MySQL 中也被叫做”键(key)”)是存储引擎用于快速找到记录的一种数据结构。这是索引的基本功能。</p>
+<p>索引很很多种类型，可以为不同的场景提供更好的性能。在 MySQL 中，索引是在存储引擎层实现而不是服务器层。所以不同的存储引擎索引的工作方式不同，也不是所有存储引擎都支持所有类型的索引。即使多个存储引擎支持同一种类型的索引，其底层的实现也可能不同。</p>
+<h3 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B-Tree索引"></a>B-Tree索引</h3><p>B-Tree 索引使用 B-Tree 数据结构来存储数据。大多数 MySQL 引擎都支持这种索引，Archive 引擎是例外。</p>
+<p>使用术语”B-Tree”，是因为 MySQL 在 CREATE TABLE 和其他语句中也使用该关键字。不过，底层不同的存储引擎也可能使用不同的存储结构。例如，NDB 集群存储引擎内部使用了 T-Tree 结构存储这种索引，即使其名字是 BTree ;InnoDB 则使用的是 B+Tree。</p>
+<p>B-Tree 通常意味着所有的值都是按照顺序存储的，并且每个叶子节点到根的距离都是相等的。如图所示。</p>
+<p><img src="/2019/03/17/把《高性能MySQL》读薄/建立在BTree结构上的索引.png" alt=""></p>
+<p>B-Tree 索引能够加快访问数据的速度，因为存储引擎不再需要进行全表扫描来获取数据，而是从索引的根节点开始搜索，根节点的槽中存放了指向子节点的指针，存储引擎根据这些指针向下层查找。通过比较节点页的值和要查找的值可以找到合适的指针进入下一层子节点。这些指针实际上定义了子节点页中值的上限和下限。最终存储引擎要么找到对应的值，要么该记录不存在。</p>
+<p>叶子节点比较特别，因为它们的指针指向的是被索引的数据，而不是其他节点页。</p>
+<p>B-Tree 对索引列是顺序组织存储的，索引很适合查找范围数据。例如”找出 A 到 C 开头的名字”</p>
+<h4 id="索引的维护"><a href="#索引的维护" class="headerlink" title="索引的维护"></a>索引的维护</h4><p>B+ 树为了维护索引的有序性，在插入新值的时候需要做必要的维护。如果插入新的行，需要挪动后面的数据，空出位置，而更糟糕的情况是，如果插入所在数据页已经满了，根据 B+ 树算法，这时候需要申请一个新的数据页，然后挪动部分数据过去。这个过程称为页分裂。这种情况下，性能自然会受到影响，除了性能外，页分裂操作还影响数据页的利用率。原本放在一个页的数据，现在分到两个页中，整体空间利用率降低大约 50%。在相邻两个页由于删除了数据，利用率很低之后，会将数据页做合并。合并的过程，可以认为是分裂过程的逆过程。</p>
+<h4 id="可以使用-B-Tree-索引的查询类型"><a href="#可以使用-B-Tree-索引的查询类型" class="headerlink" title="可以使用 B-Tree 索引的查询类型"></a>可以使用 B-Tree 索引的查询类型</h4><ol>
+<li><strong><em>全值匹配</em></strong></li>
+</ol>
+<p>全值匹配是指和索引中的所有列进行匹配。</p>
+<ol start="2">
+<li><strong><em>匹配最左前缀</em></strong></li>
+</ol>
+<p>可以只匹配某一列的值的开头部分。</p>
+<ol start="3">
+<li><strong><em>匹配范围值</em></strong></li>
+</ol>
+<p>例如前面提到的索引可以用于查找姓氏在 Allen 和 Barrymore 之间的人。这里也只使用了索引的第一列。</p>
+<ol start="4">
+<li><strong><em>精确匹配某一列并范围匹配另外一列</em></strong></li>
+</ol>
+<p>例如前面提到的索引可以用于查找所有姓为 Allen，并且名字是字母K开头的人。这里第一列姓氏last_name 全匹配，第二列范围匹配。</p>
+<h4 id="B-Tree-索引的使用限制"><a href="#B-Tree-索引的使用限制" class="headerlink" title="B-Tree 索引的使用限制"></a>B-Tree 索引的使用限制</h4><ol>
+<li><strong><em>如果不是按照索引的最左列开始查找，则无法使用索引</em></strong>。例如前面提到的索引无法查找名字为Jiangwr 的人，也无法查找某个特定生日的人，也无法查找姓氏以某个字母结尾的人。因为这些都不是最左数据列。</li>
+<li><strong><em>不能跳过索引中的列</em></strong>。例如前面提到的索引无法查找 last_name 为 Smith 并且某个日期出生的人。如果不指定 first_name 这一列，则 MySQL 只能使用索引的第一列。</li>
+<li><strong><em>如果查询中有个某个列的范围查询，则其右边所有列都无法使用索引优化查找</em></strong>。例如查询<code>WHERE last_name = &#39;Smith&#39; AND first_name LIKE &#39;J%&#39; AND dob = &#39;1976-12-23&#39;</code>,这里只能使用索引的前两列，因为 LIKE 是一个范围条件。</li>
+</ol>
+<p>索引列的顺序很重要，这些限制都和索引列的顺序有关。在优化性能的时候，可能需要使用相同的列但顺序不同的索引来满足不同类型的查询需求。</p>
+<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>哈希索引(hash index)基于哈希表实现，只有精确匹配索引所有列的查询才有效。对于每一行数据，存储引擎都会对所有的索引列计算一个哈希码(hash code)，哈希码是一个较小的值，并且不同键值的行计算出来的哈希码也不一样。哈希索引将所有的哈希码存储在索引中，同时在哈希表中保存指向每个数据行的指针。</p>
+<p>在 MySQL 中，只有 Memory 引擎显式支持哈希索引。这也是 Memory 引擎表的默认索引类型，Memory 引擎同时也支持 B-Tree 索引。值得一提的是，Memory 引擎是支持非唯一哈希索引的，如果多个列的哈希值相同，索引会以链表的方式存放多个记录指针到同一个哈希条目中。</p>
+<p>例如<code>SELECT last_name FROM test WHERE first_name = &#39;Peter&#39;;</code>MySQL 先计算 ‘Peter’ 的哈希值，并使用该值寻找对应的记录指针。然后根据哈希值，找到指向数据行的指针，最后一步是判断数据行的值是否为 ‘Peter’ ，以确保就是要查找的行。</p>
+<p>因为哈希索引只需要存储哈希值，索引结构十分紧凑，这也让哈希索引查找的速度非常快。然而，哈希索引也有他的限制:</p>
+<ol>
+<li>哈希索引只包含哈希值和行指针，不存储字段值，所以不能使用索引中的值来避免读取行。</li>
+<li>哈希索引数据不是按照索引值顺序存储的，所以无法用于排序。</li>
+<li>哈希索引也不支持索引列的匹配查找。因为哈希索引使用索引列的全部内容来计算哈希值。</li>
+<li>当出现哈希冲突的时候(不同的索引列值却有相同的哈希值)，存储引擎必须遍历链表中所有的行指针，逐行进行比较，直到找到所有符合条件的行。哈希冲突很多的话，索引维护操作的代价也会很高。例如从表中删除一行时，存储引擎需要遍历对应哈希值的链表的每一行，找到并删除对应行 的引用，冲突越多，代价越大。</li>
+</ol>
+<p>InnoDB 引擎有一个特殊的功能叫做“自适应哈希索引”。当 InnoDB 注意到某些索引值被使用得非常频繁时，它会在内存中基于 B-Tree 索引之上再创建一个哈希索引，这样让 B-Tree 索引也具有哈希索引的一些优点，比如快速哈希查找。这是一个完全自动的，内部行为，用户无法控制或者配置，不过有必要，完全可以关闭该功能。</p>
+<p>创建自定义哈希索引。让不支持哈希索引的存储引擎可以模拟和 InnoDB 一样创建哈希索引。</p>
+<h3 id="空间数据索引-R-Tree"><a href="#空间数据索引-R-Tree" class="headerlink" title="空间数据索引(R-Tree)"></a>空间数据索引(R-Tree)</h3><p>MyISAM 表支持空间索引，可以用作地理数据存储。和 B-Tree 索引不同，空间数据索引无须前缀查询。可以从所有纬度来索引数据。查询时，可以有效地使用任意纬度来组合查询。必须使用MySQL 的 GIS 相关函数如 MBRCONTAINS() 等来维护数据。MySQL 的 GIS 支持并不完善，所以大部分人都不会使用这个特性。</p>
+<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>全文索引是一种特殊类型的索引，它查找的是文本中的关键词，而不是直接比较索引中的值。全文搜索和其他几类索引的匹配方式完全不一样。全文索引更类似搜索引擎做的事情，而不是简单的WHERE 条件匹配。</p>
+<p>在相同的列上同时创建全文索引和基于值的 B-Tree 索引不会有冲突，全文索引适用于MATCH AGAINST 操作，而不是普通的 WHERE 条件操作。 </p>
+<h3 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h3><p>最常见的 B-Tree 索引，按照顺序存储数据，所以 MySQL 可以用来做 ORDER BY 和 GROUP BY 操作。因为数据是有序的，所以B-Tree会将相关的列值存储在一起。最后，因为所以中存储了实际的列值，所以有些查询可以只使用索引就能够完成全部查询。总结三个优点:</p>
+<ol>
+<li>索引大大减少了服务器需要扫描的数据量。</li>
+<li>索引可以帮助服务器避免排序和临时表。</li>
+<li>索引可以将随机 I/O 变为顺序 I/O。</li>
+</ol>
+<h3 id="主键索引与非主键索引的区别"><a href="#主键索引与非主键索引的区别" class="headerlink" title="主键索引与非主键索引的区别"></a>主键索引与非主键索引的区别</h3><p>主键索引的叶子节点存放的是整行数据，在InnoDB里，主键索引也被称为聚簇索引。<br>非主键索引的叶子节点存放的是主键的值。在InnoDB里，非主键索引也被称为二级索引。</p>
+<p><img src="/2019/03/17/把《高性能MySQL》读薄/InnoDB的主键索引.png" alt="InnoDB的主键索引"></p>
+<p><img src="/2019/03/17/把《高性能MySQL》读薄/InnoDB的二级索引.png" alt="InnoDB的二级索引"></p>
+<p><img src="/2019/03/17/把《高性能MySQL》读薄/聚簇和非聚簇表对比图.png" alt="聚簇和非聚簇表对比图"></p>
+<ul>
+<li>如果语句是 SELECT * FROM T WHRER 主键 = 1,即主键查询方式，则只需要搜索主键这棵B+ 树；</li>
+<li>如果语句是 SELECT * FROM T WHRER 非主键 = 1，则需要先搜索这个非主键索引树，得到主键 Id，再到主键索引树搜索一次。这个过程称为回表。</li>
+</ul>
+<p>也就是说，基于非主键索引的查询需要多扫描一棵索引树。因此，应该尽量使用主键查询。并且主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</p>
+<p>聚簇索引并不是一种单独的索引类型，而是一种数据存储方式。具体的细节依赖于实现方式，InnoDB 的聚簇索引实际上在同一个结构中保存了B-Tree索引和数据行。当表有聚簇索引时，它的数据行实际上是存放在索引的叶子页中的。术语”聚簇”表示数据行和相邻的键值紧凑地存储在一起(实际上也不都成立)。因为无法同时吧数据行存放在两个不同的地方，所以一个表只能由一个聚簇索引。因为存储引擎负责实现索引，因此不是所有的存储引擎都支持聚簇索引。</p>
+<p>聚簇索引的优点:</p>
+<ul>
+<li>可以把相关数据保存在一起。例如在实现电子邮箱时，可以根据用户ID来聚集数据，这样只需要从磁盘中读取少数的数据页就能获取某个用户的全部邮件。如果没有使用聚簇索引，则没封邮件都可能导致一次磁盘I/O。</li>
+<li>数据访问更快。聚簇索引将索引和数据保存在同一个B-Tree中，因此从聚簇索引中获取数据通常比在非聚簇索引中查找要快。</li>
+<li>使用覆盖索引扫描的查询可以直接使用叶节点中的主键值。</li>
+</ul>
+<p>聚簇索引的缺点:</p>
+<ul>
+<li>聚簇数据最大限度地提高了I/O密集型应用的性能，但如果数据全部都放在内存中，则访问的顺序就没有那么重要了，聚簇索引也没什么优势了。</li>
+<li>插入速度严重依赖于插入顺序。安卓主键的顺序插入是加载数据到InnoDB表中速度最快的方式。但如果不是按照主键顺序加载数据，那么在加载完成之后最后使用OPTIMIZE TABLE命令重新组织一下表。</li>
+<li>更新聚簇索引列的代价很高，因为会强制InnoDB将每个被更新的行移到新的位置。</li>
+<li>基于聚簇索引的表在插入新行，或者主键被更新导致需要移动行的时候，可能面临“页分裂(page split)”的问题。当行的主键值要求必须将这一行插入到某个已满的页中时，存储引擎会将该页分裂成两个页面来容纳该行，这就是一次页分裂操作。页分裂会导致表占用更多的磁盘空间。</li>
+<li>聚簇索引可能导致全表扫描变慢，尤其是行比较稀疏，或者由于页分裂导致数据存储不连续。</li>
+<li>二级索引(非聚簇索引)可能比想象的要更大，因为在二级索引的叶子节点包含了引用行的主键列。</li>
+<li>二级索引(非聚簇索引)访问需要两次索引查找。(二级索引叶子节点保存的不是指向行的物理位置的指针，而是行的主键值。这意味着通过二级索引查找行，存储引擎需要找到二级索引的叶子节点获得对应的主键值，然后根据这个值去聚簇索引中查找到对应的行。对于InnoDB，自适应哈希索引能够减少这样的重复工作)</li>
+</ul>
+<h3 id="覆盖索引、联合索引、索引下推"><a href="#覆盖索引、联合索引、索引下推" class="headerlink" title="覆盖索引、联合索引、索引下推"></a>覆盖索引、联合索引、索引下推</h3><p><strong>覆盖索引</strong>:当索引已经覆盖了我们的查询需求时，称为覆盖索引。<br>由于覆盖索引可以减少树的搜索次数，显著提升查询性能，所以使用覆盖索引是一个常用的性能优化手段。<br><strong>联合索引</strong>:两个或者两个以上列的索引称为联合索引，又称复合索引。<br>根据创建联合索引的顺序，以最左原则进行where检索。在建立联合索引的时候，如何安排索引内的字段顺序，主要看索引的复用能力，因为支持最左前缀，所以当已经有了(a,b)这个联合索引之后，一般就不需要单独在a上建立索引了。因此，第一原则是，如果通过调整顺序，可以少维护一个索引，那么这个顺序往往是需要优先考虑的。但是当查询条件里只有b的语句，是无法使用(a,b)这个联合索引的，这个时候你不得不维护另外一个索引，也就是说你需要同时维护(a,b)、(b)这两个索引。这个时候，需要考虑的原则就是空间了，如果a的字段比b的字段大，那就建议创建一个(a,b)的联合索引和一个(b)的单字段索引。<br><strong>索引下推</strong>:<br>例如SQL语句:SELECT * FROM T WHERE name LIKE ‘丁%’ AND age = 10;有联合索引(name,age)。<br>那么此时只能使用name字段。当然还要判断其他条件是否满足。<br>在MySQL5.6之前，只能从找到name满足条件的，然后一个一个回表。到主键索引中找出数据行，再对比字段值。<br>再MySQL引入的索引下推优化(index condition pushdown),可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，<strong>减少回表次数</strong>。</p>
+<p>### </p>
+</div><div class="tags"><a href="/tags/MySQL/">MySQL</a></div><div class="post-nav"><a class="next" href="/2019/03/15/使用Spring-Boot创建定时任务/">使用Spring Boot创建定时任务</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java基础/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java多线程/">Java多线程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/书籍阅读/">书籍阅读</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/数据库事务/" style="font-size: 15px;">数据库事务</a> <a href="/tags/SpringBoot/" style="font-size: 15px;">SpringBoot</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/单例模式/" style="font-size: 15px;">单例模式</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/把《高性能MySQL》读薄/">把《高性能MySQL》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/15/使用Spring-Boot创建定时任务/">使用Spring Boot创建定时任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/SpringBoot配置HTTPS/">SpringBoot配置HTTPS</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/13/JVM的运行时数据区域、垃圾回收以及类加载机制/">JVM的运行时数据区域、垃圾回收以及类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/20/SpringBoot-打包的时候报错-BeanCreationException/">SpringBoot 打包的时候报错 BeanCreationException</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/11/MySQL中索引的类型/">MySQL中索引的类型</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/07/MySQL数据库事务、隔离级别以及多版本并发控制-MVCC/">MySQL数据库事务、隔离级别以及多版本并发控制(MVCC)</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/03/Spring-Boot中使用AOP输出接口请求参数与返回值/">Spring Boot中使用AOP输出接口请求参数与返回值</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/15/记录Ant-Design-Pro-Spring-Boot-jar包部署时遇到的坑/">记录Ant Design Pro+Spring Boot jar包部署时遇到的坑</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/01/分布式锁的认识/">分布式锁的认识</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
