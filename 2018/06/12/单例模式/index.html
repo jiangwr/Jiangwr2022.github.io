@@ -14,7 +14,16 @@
 <p>第一个if是为了保证效率，只有在instance为null时才进入同步块。</p>
 <p>第二个if是了防止出现多个实例。</p>
 <p><code>volatile</code>的作用：</p>
-<p>首先需要了解到JVM执行<code>instance = new Singleton()</code>,大致经历三个步骤1.给Singleton对象分配地址；2.通过Singleton的构造方法，实例化对象；3.instance引用指向Singleton对象。但是在JVM编译器中存在指令重排序优化，即步骤2，步骤3的执行先后顺序是不确定的。有可能是1-2-3执行，也可能是1-3-2执行。如果在1-3-2的执行顺序情况下，线程A执行完了步骤3，但还没开始执行步骤2，然后cpu被线程B抢占，线程B执行<code>if (instance == null)</code>，由于此时instance已经不是null了(但还没被初始化，比较特殊的中间状态)，所以线程B会直接返回instance，顺理成章地就会报错了。这里的关键是volatile防止出现线程A写操作未完成，线程B就进行读操作了。</p>
+<p>首先需要了解到JVM执行<code>instance = new Singleton()</code>,大致经历三个步骤</p>
+<ol>
+<li><p>给Singleton对象分配地址；</p>
+</li>
+<li><p>通过Singleton的构造方法，实例化对象；</p>
+</li>
+<li><p>instance引用指向Singleton对象。</p>
+</li>
+</ol>
+<p>但是在JVM编译器中存在指令重排序优化，即步骤2，步骤3的执行先后顺序是不确定的。有可能是1-2-3执行，也可能是1-3-2执行。如果在1-3-2的执行顺序情况下，线程A执行完了步骤3，但还没开始执行步骤2，然后cpu被线程B抢占，线程B执行<code>if (instance == null)</code>，由于此时instance已经不是null了(但还没被初始化，比较特殊的中间状态)，所以线程B会直接返回instance，顺理成章地就会报错了。这里的关键是volatile防止出现线程A写操作未完成，线程B就进行读操作了。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 懒汉式，静态内部类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>《Effective Java》第一版的推荐写法，非常巧妙。</p>
 <ul>
