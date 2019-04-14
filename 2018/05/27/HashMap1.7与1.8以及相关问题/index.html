@@ -53,6 +53,7 @@
 <p>线程一被调度回来执行，先是执行 newTalbe[i] = e， 然后是e = next，导致了e指向了key(7)，而下一次循环的next = e.next导致了next指向了key(3)。<br><img src="https://img-blog.csdnimg.cn/20181225222919742.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbnRhY2V2ZXJ5ZGF5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p>e.next = newTable[i] 导致 key(3).next 指向了 key(7)。注意：此时的key(7).next 已经指向了key(3)， 环形链表就这样出现了。<br><img src="https://img-blog.csdnimg.cn/20181225222935477.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dhbnRhY2V2ZXJ5ZGF5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h3 id="为什么要树化"><a href="#为什么要树化" class="headerlink" title="为什么要树化?"></a>为什么要树化?</h3><p>本质上是一个安全问题。因为在元素放置的过程中，如果对象哈希冲突，会放在一个桶中，形成一个链表，链表的查询是线性，会严重影响存取性能。恶意代码就可以构造哈希冲突的数据与服务器交互，导致服务器CPU大量占用，这就构成了哈希碰撞拒绝服务，而红黑树的平均查找长度为lgN小于链表的平均查找长度N/2。</p>
+<h3 id="为什么要达到-8-个节点才去树化"><a href="#为什么要达到-8-个节点才去树化" class="headerlink" title="为什么要达到 8 个节点才去树化?"></a>为什么要达到 8 个节点才去树化?</h3><p>泊松分布。在良好 hash 的情况下， 8 个元素共用一个桶的概率为千万分之六，足够小。</p>
 <h3 id="HashMap的table为什么是transient修饰"><a href="#HashMap的table为什么是transient修饰" class="headerlink" title="HashMap的table为什么是transient修饰"></a>HashMap的table为什么是transient修饰</h3><p>jdk1.8</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">transient <span class="keyword">Node</span><span class="title">&lt;K</span>,V&gt;[] table;</span><br></pre></td></tr></table></figure>
 <p>jdk1.7</p>
