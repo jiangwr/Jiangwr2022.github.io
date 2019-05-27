@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>《Redis设计与实现》读薄 | jiangwr</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">《Redis设计与实现》读薄</h1><a id="logo" href="/.">jiangwr</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">《Redis设计与实现》读薄</h1><div class="post-meta">May 27, 2019<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><h2 id="Redis-的数据结构"><a href="#Redis-的数据结构" class="headerlink" title="Redis 的数据结构"></a>Redis 的数据结构</h2><p>Redis 数据库里面的每个键值对都是由对象组成的。</p>
+<ul>
+<li><p>数据库键总是一个字符串对象 。</p>
+</li>
+<li><p>数据库键的值则可以是字符串对象、列表对象(list object)、哈希对象(hash </p>
+<p>object)、集合对象(set object)、有序集合对象(sorted set object)这五种对象中的 </p>
+<p>其中一种。 </p>
+</li>
+</ul>
+<p>Redis 没有直接使用 C 语言传统的字符串表示(以空字符结尾的字符数组，以下简称 C<br>字符串)，而是自己构建了一种名为简单动态字符串(simple dynamic string，SDS)的抽象<br>类型，并将 SDS 用作 Redis 的默认字符串表示。</p>
+<p>当 Redis 需要的不仅仅是一个字符串字面量，而是一个可以被修改的字符串值时，Redis<br>就会使用 SDS 来表示字符串值，比如在 Redis 的数据库里面，包含字符串值的键值对在底<br>层都是由 SDS 实现的。</p>
+<p>Redis 将在数据库中创建一个新的键值对，其中: </p>
+<ul>
+<li><p>键值对的键是一个字符串对象，对象的底层实现是一个保存着字符串 “msg” 的 SDS。 </p>
+</li>
+<li><p>键值对的值也是一个字符串对象，对象的底层实现是一个保存着字符串 “hello </p>
+<p>world” 的 SDS。 </p>
+</li>
+</ul>
+<h3 id="SDS-简单动态字符串-的定义"><a href="#SDS-简单动态字符串-的定义" class="headerlink" title="SDS(简单动态字符串) 的定义"></a>SDS(简单动态字符串) 的定义</h3><p><img src="/2019/05/27/《Redis设计与实现》读薄/SDS示例.png" alt=""></p>
+<p>SDS 遵循 C 字符串以空字符结尾的惯例，保存空字符的 1 字节空间不计算在 SDS 的 len 属性里面，并且为空字符分配额外的 1 字节空间，以及添加空字符到字符串末尾等操 </p>
+<p>作，都是由 SDS 函数自动完成的，所以这个空字符对于 SDS 的使用者来说是完全透明的。 遵循空字符结尾这一惯例的好处是，SDS 可以直接重用一部分 C 字符串函数库里面的函数。 </p>
+<p><img src="/2019/05/27/《Redis设计与实现》读薄/C字符串和 SDS 之间的区别.png" alt=""></p>
+<p>总结:Redis 只会使用 C 字符串作为字面量，在大多数情况下，Redis 使用 SDS(Simple Dynamic String，简单动态字符串)作为字符串表示。 </p>
+<p>比起 C 字符串，SDS 具有以下优点: </p>
+<ul>
+<li>1)常数复杂度获取字符串长度。 </li>
+<li>2)杜绝缓冲区溢出。 </li>
+<li>3)减少修改字符串长度时所需的内存重分配次数。 </li>
+<li>4)二进制安全。 </li>
+<li>5)兼容部分 C 字符串函数。 </li>
+</ul>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>Redis 的链表实现的特性可以总结如下: </p>
+<ul>
+<li>双端:链表节点带有 prev 和 next 指针，获取某个节点的前置节点和后置节点的 复杂度都是 <em>O</em>(1)。<br> 无环:表头节点的 prev 指针和表尾节点的 next 指针都指向 NULL，对链表的访 问以 NULL 为终点。 </li>
+<li>带表头指针和表尾指针:通过 list 结构的 head 指针和 tail 指针，程序获取链 表的表头节点和表尾节点的复杂度为 <em>O</em>(1)。</li>
+<li>带链表长度计数器:程序使用 list 结构的 len 属性来对 list 持有的链表节点进 行计数，程序获取链表中节点数量的复杂度为 <em>O</em>(1)。 </li>
+<li>多态:链表节点使用 void* 指针来保存节点值，并且可以通过 list 结构的 dup、 free、match 三个属性为节点值设置类型特定函数，所以链表可以用于保存各种不 同类型的值。 </li>
+</ul>
+<h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>字典，又称为符号表、关联数组、或映射，是一种用于保存键值对的抽象数据结构。字典中每个键都是独一无二的。</p>
+<h3 id="字典的实现"><a href="#字典的实现" class="headerlink" title="字典的实现"></a>字典的实现</h3><p>Redis 的字典使用哈希表作为底层实现，一个哈希表里面可以有多个哈希表接电，而每个哈希表节点保存了字典中的一个键值对。</p>
+<p>### </p>
+<ul>
+<li>字典被广泛用于实现Redis 的各种功能，包括数据库和哈希键。</li>
+<li>Redis 中的字典使用哈希表作为底层实现，每个字典带有两个哈希表，一个平时使用，另一个仅在进行 rehash 时使用。</li>
+<li>当字典被用作数据库的底层实现，或者哈希键的底层实现时，Redis 使用 MurmurHash2 算法来计算键的哈希值。</li>
+<li>哈希表使用链地址法来解决键冲突，被分配到同一个索引上的多个键值对会链接成一个单向链表。</li>
+<li>在对哈希表进行扩展或者收缩操作时，程序需要将现有哈希表包含的所有键值对 rehash 到新的哈希表里面，并且这个rehash 过程并不是一次性完成的，而是渐进式地完成的。</li>
+</ul>
+<h2 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h2><p>跳跃表是一种有序数据结构，他通过在每个节点中维持多个指向其他借点的指针，从而达到快速访问节点的目的。</p>
+<p>Redis 使用跳跃表作为有序集合键的底层实现之一，如果一个有序集合包含的元素数量比较多，又或者有序集合中元素的成员是比较长的字符串时，Redis 就会使用跳跃表来作为有序集合键的底层实现。</p>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><ul>
+<li>Redis 数据库中的每个键值对的键和值都是一个对象。</li>
+<li>Redis 共有字符串、列表、哈希、集合、有序集合五种类型的对象，每种的对象至少都有两种或以上的编码方式，不同的编码可以在不同的使用场景上优化对象的使用效率。</li>
+<li>服务器在你执行某些命令之前，会先检查给定键的类型能否执行指定的命令，而检查一个键的类型就是检查键的值对象的类型。</li>
+<li>Redis 的对象系统带有引用计数实现的内存回收机制，当一个对象不再被使用时，该对象所占用的内存会被自动释放。</li>
+<li>Redis 会共享值为 0 到 9999 的字符串对象。</li>
+<li>对象会记录自己的最后一次被访问的时间，这个时间可以用于计算对象的空转时间。</li>
+</ul>
+<h2 id="RDB-持久化"><a href="#RDB-持久化" class="headerlink" title="RDB 持久化"></a>RDB 持久化</h2><p>Redis是一个键值对数据库服务器，服务器中通常包含着任意个非空数据库，而每个非空数据库中又可以包含任意个键值对。将服务器中的非空数据库以及它们的键值对统称为数据库状态。</p>
+<p>因为 Redis 是内存数据库，它将自己的数据库状态存储在内存里面，所以如果不想办法将存储在内存中的数据库状态保存到磁盘里面，那么一旦服务器进程退出，服务器中的数据库状态也会消失不见。</p>
+<p>为了解决这个问题，Redis 提供了 RDB 持久化功能，这个功能可以将 Redis 在内存中的数据库状态保存到磁盘中，避免数据意外丢失。</p>
+<p>RDB 持久化既可以手动执行，也可以根据服务器配置选项定期执行，该功能可以将某个时间点上的数据库状态保存到一个 RDB 文件中。</p>
+<p>RDB持久化功能生成的 RDB 文件是一个经过压缩的二进制文件，通过该文件可以还原生成RDB文件时的数据库状态。</p>
+<p>因为RDB文件时保存在硬盘中的，所以即使 Redis 服务器进程退出，甚至运行 Redis 服务器的计算机停机，但只要 RDB 文件仍然存在，Redis 服务器就可以用它还原数据库状态。</p>
+<h2 id="AOF-持久化"><a href="#AOF-持久化" class="headerlink" title="AOF 持久化"></a>AOF 持久化</h2><p>除了 RDB 持久化功能之外，Redis 还爱提供了 AOF持久化功能。与 RDB 持久化通过保存数据库中的键值对来记录数据库状态不同， AOF 持久化是通过保存 Redis 服务器所执行的写命令来记录数据库状态的。</p>
+<h2 id="Sentinel-哨兵"><a href="#Sentinel-哨兵" class="headerlink" title="Sentinel 哨兵"></a>Sentinel 哨兵</h2><p>Sentinel(哨兵)是 Redis 的高可用性解决方案:由一个或多个 Sentinel 组成的 Sentinel 系统可以监视人意多个主服务器，以及这些主服务器下的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器属下的某个从服务器升级为新的主服务器，然后由新的主服务器代替已下线的主服务器继续处理命令请求。 </p>
+</div><div class="tags"></div><div class="post-nav"><a class="next" href="/2019/05/20/Spring-Web-MVC-文档阅读笔记/">Spring Web MVC 文档阅读笔记</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/书籍阅读/">书籍阅读</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Spring/" style="font-size: 15px;">Spring</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/05/27/《Redis设计与实现》读薄/">《Redis设计与实现》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/20/Spring-Web-MVC-文档阅读笔记/">Spring Web MVC 文档阅读笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/11/Springboot打包时引入本地的jar包/">Springboot打包时引入本地的jar包</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/08/算法-基础排序/">算法-基础排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/Spring-IoC-容器的启动过程/">Spring IoC 容器的启动过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/02/Springboot-logback-整合-GrayLog2-的环境搭建/">SpringBoot logback 整合 GrayLog2 的环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/29/shell-脚本实现-SpringBoot-自动部署/">shell 脚本实现 SpringBoot 自动部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/17/把《高性能MySQL》读薄/">把《高性能MySQL》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/15/使用Spring-Boot创建定时任务/">使用Spring Boot创建定时任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/05/SpringBoot配置HTTPS/">SpringBoot配置HTTPS</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
