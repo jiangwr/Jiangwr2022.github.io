@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>位运算的常见使用方式 | jiangwr</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">位运算的常见使用方式</h1><a id="logo" href="/.">jiangwr</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">位运算的常见使用方式</h1><div class="post-meta">Jun 12, 2019<span> | </span><span class="category"><a href="/categories/数据结构与算法/">数据结构与算法</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><p>计算机数据都是以二进制的形式储存的，位运算就是直接对整数在内存中的二进制位进行操作的运算，运算速度比较快。此篇是记录位运算的常见场景的解决方式。</p>
+<a id="more"></a>
+<h2 id="通过位运算求-a-与-b-的和"><a href="#通过位运算求-a-与-b-的和" class="headerlink" title="通过位运算求 a 与 b 的和"></a>通过位运算求 a 与 b 的和</h2><p>假设 a = 3, b = 2</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>二进制表示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>11</td>
+</tr>
+<tr>
+<td>2</td>
+<td>10</td>
+</tr>
+<tr>
+<td>3 &amp; 2</td>
+<td>10</td>
+</tr>
+<tr>
+<td>3  ^ 2</td>
+<td>01</td>
+</tr>
+<tr>
+<td>3 + 2</td>
+<td>101</td>
+</tr>
+</tbody>
+</table>
+<p>可以得出 <code>(3 &amp; 2) &lt;&lt; 1</code> 是 3 + 2 中发生的进位， <code>3 ^ 2</code> 的结果是 3 + 2 中不考虑进位的和。把 <code>(3 &amp; 2) &lt;&lt; 1</code> 与 <code>3 ^ 2</code>作为新的 a 与 b， 如此反复，直至进位为 0，就得到了 3 + 2 的和。</p>
+<p>代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSum</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span>  b == <span class="number">0</span> ? a : getSum(a ^ b, (a &amp; b) &lt;&lt; <span class="number">1</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="寻找单身数字"><a href="#寻找单身数字" class="headerlink" title="寻找单身数字"></a>寻找单身数字</h2><p>给定一个不为空的数组，只有一个数字出现一次，其余数字均出现两次。</p>
+<p><code>^</code> 异或运算的特性是两个比较的位不同时其结果是 1，否则结果为 0。所以 1.当两个相同的数字进行异或运算得到的结果为 0; 2.任何数字与 0 异或运算结果为其本身。</p>
+<p>把数组中所有数字异或起来，出现两次的数字会异或为 0，最后只剩下出现一次的数字。</p>
+<p>代码如下:</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public <span class="built_in">int</span> singleNumber(<span class="built_in">int</span>[] nums) &#123;</span><br><span class="line">    <span class="built_in">int</span> <span class="literal">result</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">int</span> num : nums) &#123;</span><br><span class="line">        <span class="literal">result</span> ^= num;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">result</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数字二进制中-1-的个数"><a href="#数字二进制中-1-的个数" class="headerlink" title="数字二进制中 1 的个数"></a>数字二进制中 1 的个数</h2><p>给定一个数字，求其二进制中一个的个数。</p>
+<p>假设给的是 3。</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>二进制表示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>101</td>
+</tr>
+<tr>
+<td>4</td>
+<td>100</td>
+</tr>
+<tr>
+<td>3</td>
+<td>11</td>
+</tr>
+<tr>
+<td>2</td>
+<td>10</td>
+</tr>
+<tr>
+<td>5 &amp; 4</td>
+<td>100</td>
+</tr>
+<tr>
+<td>4 &amp; 3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3 &amp; 2</td>
+<td>10</td>
+</tr>
+<tr>
+<td>2 &amp; 1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>由表格可以知道 <code>n &amp; (n - 1)</code> 总是会去掉二进制中最低位上的 1。所以 <code>n</code> 和 <code>n - 1</code> 进行与运算且不为 0 的次数即为二进制上 1 的个数。</p>
+<p>代码如下</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public <span class="built_in">int</span> hammingWeight(<span class="built_in">int</span> <span class="built_in">n</span>) &#123;</span><br><span class="line">    <span class="built_in">int</span> <span class="built_in">count</span> = <span class="number">0</span>;</span><br><span class="line">    while (<span class="built_in">n</span> != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">n</span> &amp;= (<span class="built_in">n</span> - <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">count</span>++;</span><br><span class="line">    &#125;</span><br><span class="line">    return <span class="built_in">count</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div><div class="tags"></div><div class="post-nav"><a class="next" href="/2019/05/28/离职同事留下的日期格式BUG/">离职同事留下的日期获取异常的BUG</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web技术/">Web技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/书籍阅读/">书籍阅读</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发经验/">开发经验</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Spring/" style="font-size: 15px;">Spring</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/12/位运算的相关知识/">位运算的常见使用方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/28/离职同事留下的日期格式BUG/">离职同事留下的日期获取异常的BUG</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/27/算法-基础排序/">算法-基础排序</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/20/JVM的运行时数据区域、垃圾回收以及类加载机制/">JVM的运行时数据区域、垃圾回收以及类加载机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/13/把《高性能MySQL》读薄/">把《高性能MySQL》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/11/Springboot打包时引入本地的jar包/">Springboot打包时引入本地的jar包</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/29/Spring-IoC-容器的启动过程/">Spring IoC 容器的启动过程</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/11/《Redis设计与实现》读薄/">《Redis设计与实现》读薄</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/02/Springboot-logback-整合-GrayLog2-的环境搭建/">SpringBoot logback 整合 GrayLog2 的环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/29/shell-脚本实现-SpringBoot-自动部署/">shell 脚本实现 SpringBoot 自动部署</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">jiangwr</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
