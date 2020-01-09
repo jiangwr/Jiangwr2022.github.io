@@ -19,7 +19,7 @@
 <p>Root route：<code>root :to =&gt; &#39;dashboards#show&#39;</code>的意思是访问“localhost:3000/”时访问的页面</p>
 <p>Simple route：<code>match &quot;demo/index&quot;, :to =&gt; &quot;demo#index&quot;</code>的意思是调用名为demo的Controller中名为index的Action。</p>
 <p>Default route：routes.rb文件的最下面也就是优先级最低的一条配置既是 Default route 规则。如果传入的请求没有能够匹配Routes配置中的任何一条规则，则将按照这一条规则对请求进行解析。</p>
-<h3 id="Rails-中-Model-的-ActiveRecord-和-ActiveRelation"><a href="#Rails-中-Model-的-ActiveRecord-和-ActiveRelation" class="headerlink" title="Rails 中 Model 的 ActiveRecord 和 ActiveRelation"></a>Rails 中 Model 的 ActiveRecord 和 ActiveRelation</h3><p>MVC 架构中的 Model 主要处理两件事情。</p>
+<h3 id="Rails-中-Model-的-ActiveRecord-和-ActiveRelation"><a href="#Rails-中-Model-的-ActiveRecord-和-ActiveRelation" class="headerlink" title="Rails 中 Model 的 ActiveRecord 和 ActiveRelation"></a>Rails 中 Model 的 ActiveRecord 和 ActiveRelation</h3><p>MVC 架构中的 Model 主要处理两件事情:</p>
 <ol>
 <li><p>将 Controller 从 View 得到的数据按照业务需求转化为实体对象之间的关系保存到关系数据库中。</p>
 </li>
@@ -30,7 +30,7 @@
 <p>active record，是一种编程模式，特点是一个模型类对应关系型数据库中的一个表，而模型类的一个实例对应表中的一行记录。这使得我们能够方便地将数据库中的记录转化为实体对象，或将实体对象持久化到数据库中，以便业务代码中处理实体对象之间的关系而不再是数据库表记录之间的关系。其实任何关系数据库与面向对象语言交互的场景下都可以使用这种思想而不局限于某种编程语言。</p>
 <p>ActiveRecord，是Rails对于这种模式的一种实现，以便我们更快速的实现对象在关系数据库中的持久化开发工作。业务中的实体类继承 ActiveRecord，便能方便的将数据库中的记录与实体对象之间进行转换。</p>
 <p>还有不得不提的 ActiveRelation，这是 Rails3 版本中增加的内容，是一个对象关系算法解析器。ActiveRelation 能够将复杂的查询分解为简单的逐步调用，通过一系列基于上一次调用的结果上的调用完成复杂的查询，而不用去关心具体的SQL语句编写工作。大多数情况下ActionRelation是隐藏在幕后的，不被我们直接使用，我们能看到的只是对于ActionRecord的操作。通过 IDE 的打印 SQL 可以看到 SQL 都是被拆分成多个简单 SQL。</p>
-<h3 id="Controller-渲染指定的Templates"><a href="#Controller-渲染指定的Templates" class="headerlink" title="Controller 渲染指定的Templates"></a>Controller 渲染指定的Templates</h3><p>归结起来，Controller 主要处理两件事情：</p>
+<h3 id="Controller-渲染指定的Templates"><a href="#Controller-渲染指定的Templates" class="headerlink" title="Controller 渲染指定的Templates"></a>Controller 渲染指定的Templates</h3><p>归结起来，Controller 主要处理两件事情:</p>
 <ol>
 <li><p>与 Model 交互以获取用于显示的信息。</p>
 </li>
